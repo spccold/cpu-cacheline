@@ -18,34 +18,37 @@
 package org.spccold;
 
 /**
- * <a href="http://coolshell.cn/articles/10249.html">7个示例科普CPU Cache#内存访问和运行</a>
+ * 结果与博客完全相反
+ * <a href="http://coolshell.cn/articles/10249.html">7个示例科普CPU Cache#内存访问和运行#指令级别并发</a>
  * 
  * @author spccold
- * @version $Id: ArrayAccessSpeed.java, v 0.1 2016年12月9日 下午2:12:08 spccold Exp $
+ * @version $Id: InstructionConcurrency.java, v 0.1 2016年12月9日 下午3:22:03 spccold Exp $
  */
-public class ArrayAccessSpeed {
+public class InstructionConcurrency {
+	private static final int STEPS = 256 * 1024 * 1024;
 	public static void main(String[] args) {
-		int[] arr = new int[64 * 1024 * 1024];
-		access1(arr);
-//		access2(arr);
-	}
-	
-	public static void access1(int[] arr){
-		long start = System.currentTimeMillis();
-		for(int i = 0 ; i< arr.length; i++){
-			arr[i] = arr[i] * 3;
-		}
-		long end = System.currentTimeMillis();
-		System.out.println("access1 consume: "+(end-start));
+		int[] arr = new int[2];
+		case1(arr);
+//		case2(arr);
 	}
 
-	//16 * 4(btis) = 64bits(单个cacheline的大小)
-	public static void access2(int[] arr){
+	public static void case1(int[] arr) {
 		long start = System.currentTimeMillis();
-		for(int i = 0 ; i< arr.length; i+=16){
-			arr[i] = arr[i] * 3;
+		for (int i = 0; i < STEPS; i++) {
+			arr[0]++;
+			arr[0]++;
 		}
 		long end = System.currentTimeMillis();
-		System.out.println("access1 consume: "+(end-start));
+		System.out.println("case1 consume: " + (end - start));
+	}
+
+	public static void case2(int[] arr) {
+		long start = System.currentTimeMillis();
+		for (int i = 0; i < STEPS; i++) {
+			arr[0]++;
+			arr[1]++;
+		}
+		long end = System.currentTimeMillis();
+		System.out.println("case2 consume: " + (end - start));
 	}
 }
